@@ -36,7 +36,7 @@ Para apenas instalar as configurações em uma máquina que já tem os pacotes:
 - `config/rofi`: launcher, clipboard, power menu, screenshot e wallpapers;
 - `config/kitty`: terminal e tema CYBR;
 - `config/nvim`: configuração completa e `lazy-lock.json`;
-- `config/firefox`: apenas CSS do Firefox/Sidebery, nunca cookies ou perfil;
+- Firefox/Sidebery: mantidos separadamente no repositório original `cybr-firefox`;
 - `config/herdr.toml`: somente preferências do Herdr, sem sessão ou logs;
 - `fonts/GeistMono`: quatro faces Nerd Font usadas pelo tema;
 - `bin`: clipboard, screenshot, scratchpad, gravação e troca de wallpaper;
@@ -47,11 +47,8 @@ Para apenas instalar as configurações em uma máquina que já tem os pacotes:
 1. Entre novamente na sessão Hyprland ou execute `hyprctl reload`.
 2. Confira os nomes dos monitores com `hyprctl monitors`; a configuração usa um
    fallback portátil. Se quiser posições fixas, adicione regras em `hyprland.conf`.
-3. No Firefox, abra `about:config`, ative
-   `toolkit.legacyUserProfileCustomizations.stylesheets`, reinicie o navegador e
-   copie os CSS de `~/.config/dotfiles-firefox` para o diretório `chrome` do
-   perfil desejado. O instalador faz isso automaticamente somente quando há
-   exatamente um perfil.
+3. Instale e configure o Firefox/Sidebery usando o repositório original
+   `cybr-firefox`.
 4. Abra o Vial e importe `~/Documents/Keyboard/layout.vil`. O overlay do firmware
    não é aplicado automaticamente: veja `keyboard/README.md`.
 5. O Neovim instala/atualiza plugins na primeira abertura; execute `:checkhealth`

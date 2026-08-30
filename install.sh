@@ -4,7 +4,6 @@ set -Eeuo pipefail
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 dry_run=0
 skip_packages=0
-skip_firefox=0
 skip_wallpapers=0
 backup_root="${XDG_STATE_HOME:-${HOME}/.local/state}/dotfiles-backups/$(date +%Y%m%d-%H%M%S)"
 
@@ -13,7 +12,6 @@ usage() {
 Usage: ./install.sh [options]
   --dry-run          show actions without changing the system
   --no-packages      skip pacman and AUR packages
-  --no-firefox       skip Firefox chrome CSS
   --no-wallpapers    skip bundled wallpapers
 EOF
 }
@@ -77,7 +75,6 @@ install_configs() {
     copy_tree "$repo_root/config/rofi" "$config_home/rofi"
     copy_tree "$repo_root/config/kitty" "$config_home/kitty"
     copy_tree "$repo_root/config/nvim" "$config_home/nvim"
-    copy_tree "$repo_root/config/firefox" "$config_home/dotfiles-firefox"
     copy_tree "$repo_root/config/swaync" "$config_home/swaync"
     copy_file "$repo_root/config/mako-config" "$config_home/mako/config"
     copy_file "$repo_root/config/swappy-config" "$config_home/swappy/config"
@@ -107,22 +104,6 @@ install_wallpapers() {
     done < <(find "$repo_root/wallpapers" -maxdepth 1 -type f -print0 | sort -z)
 }
 
-install_firefox() {
-    ((skip_firefox)) && return
-    local firefox_dir="$HOME/.mozilla/firefox"
-    [[ -d "$firefox_dir" ]] || { say 'Firefox profile not found; CSS is under ~/.config/dotfiles-firefox'; return; }
-    local -a profiles
-    mapfile -t profiles < <(find "$firefox_dir" -mindepth 1 -maxdepth 1 -type d -name '*.default*' -print | sort)
-    if ((${#profiles[@]} != 1)); then
-        say 'Firefox has zero or multiple profiles; copy CSS manually from ~/.config/dotfiles-firefox'
-        return
-    fi
-    run mkdir -p "${profiles[0]}/chrome"
-    copy_file "$repo_root/config/firefox/userChrome.css" "${profiles[0]}/chrome/userChrome.css"
-    copy_file "$repo_root/config/firefox/sideberry.css" "${profiles[0]}/chrome/sideberry.css"
-    say 'enable toolkit.legacyUserProfileCustomizations.stylesheets in about:config'
-}
-
 enable_audio() {
     ((dry_run || skip_packages)) && return
     systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || say 'retry audio services after logging into Hyprland'
@@ -132,7 +113,6 @@ while (($#)); do
     case "$1" in
         --dry-run) dry_run=1 ;;
         --no-packages) skip_packages=1 ;;
-        --no-firefox) skip_firefox=1 ;;
         --no-wallpapers) skip_wallpapers=1 ;;
         -h|--help) usage; exit 0 ;;
         *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
@@ -143,7 +123,6 @@ done
 install_packages
 install_configs
 install_wallpapers
-install_firefox
 enable_audio
 
 say "done; backups are under ${backup_root} when replacements were needed"
