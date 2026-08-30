@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+wallpaper_dir="${HOME}/.local/share/wallpapers"
+wallpaper="${wallpaper_dir}/akihabara-2560x1440.webp"
+
+[[ -f "$wallpaper" ]] || wallpaper="$(find "$wallpaper_dir" -maxdepth 1 -type f | sort | head -n 1)"
+[[ -n "${wallpaper:-}" && -f "$wallpaper" ]] || exit 0
+
+for monitor in $(hyprctl monitors -j | jq -r '.[].name'); do
+    hyprctl hyprpaper wallpaper "${monitor},${wallpaper}" >/dev/null
+done

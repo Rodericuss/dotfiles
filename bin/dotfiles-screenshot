@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+output_dir="${HOME}/Pictures/Screenshots"
+filename="shot-$(date +%Y-%m-%d-%H%M%S).png"
+mode="region"
+
+while (($#)); do
+    case "$1" in
+        -o) output_dir="$2"; shift 2 ;;
+        -f) filename="$2"; shift 2 ;;
+        -m) mode="$2"; shift 2 ;;
+        --edit) edit=1; shift ;;
+        *) echo "Usage: $0 [-o DIR] [-f FILE] [-m output|window|region] [--edit]" >&2; exit 2 ;;
+    esac
+done
+
+mkdir -p "$output_dir"
+destination="${output_dir}/${filename}"
+
+case "$mode" in
+    output)
+        monitor="$(hyprctl activeworkspace -j | jq -r '.monitor')"
+        grim -o "$monitor" "$destination"
+        ;;
+    window)
+        geometry="$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')"
+        grim -g "$geometry" "$destination"
+        ;;
+    region)
+        geometry="$(slurp)"
+        [[ -n "$geometry" ]] || exit 0
+        grim -g "$geometry" "$destination"
+        ;;
+    *) echo "Invalid mode: $mode" >&2; exit 2 ;;
+esac
+
+if [[ "${edit:-0}" == 1 ]]; then
+    swappy -f "$destination"
+fi
+
+printf '%s\n' "$destination"

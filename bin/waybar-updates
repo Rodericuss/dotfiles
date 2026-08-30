@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v checkupdates >/dev/null 2>&1; then
+    printf '{"text":"?","tooltip":"install pacman-contrib","class":"unknown"}\n'
+    exit 0
+fi
+
+count="$(checkupdates 2>/dev/null | wc -l)"
+if ((count > 0)); then
+    printf '{"text":"%s","tooltip":"%s pending updates","class":"pending-updates"}\n' "$count" "$count"
+else
+    printf '{"text":"","tooltip":"system is up to date","class":"updated"}\n'
+fi

@@ -1,0 +1,9 @@
+# Runtime and machine-specific state
+.DS_Store
+*.log
+*.bak
+config/nvim/.cache/
+
+# Keep private Firefox profiles, browser databases and credentials out of Git.
+config/firefox/profile/
+home/.ssh/

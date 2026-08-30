@@ -1,0 +1,44 @@
+# CYBRLAND - MAKO
+# Red cyberpunk theme
+font=JetBrains Mono Nerd Font 10
+background-color=#0f0f0f
+text-color=#e8d5d5
+border-color=#3a1a1a
+border-size=2
+border-radius=0
+padding=16
+margin=8
+width=380
+icons=1
+max-icon-size=32
+max-visible=3
+sort=-time
+anchor=top-right
+on-button-left=dismiss
+on-button-middle=none
+on-button-right=dismiss-all
+default-timeout=5000
+ignore-timeout=0
+
+[urgency=low]
+background-color=#0f0f0f
+text-color=#888888
+border-color=#3a1a1a
+border-size=2
+default-timeout=3000
+
+[urgency=normal]
+background-color=#120808
+text-color=#e8d5d5
+border-color=#cc2200
+border-size=2
+default-timeout=5000
+
+[urgency=critical]
+background-color=#1a0000
+text-color=#ffd5d5
+border-color=#ff2200
+border-size=4
+default-timeout=0
+ignore-timeout=1
+layer=overlay

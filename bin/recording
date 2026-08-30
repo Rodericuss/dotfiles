@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if pgrep -x wf-recorder >/dev/null; then
+    pkill -INT -x wf-recorder
+    notify-send "Recording stopped"
+    exit 0
+fi
+
+mkdir -p "${HOME}/Videos"
+file="${HOME}/Videos/recording-$(date +%Y-%m-%d-%H%M%S).mp4"
+wf-recorder -f "$file" >/dev/null 2>&1 &
+notify-send "Recording started" "$file"

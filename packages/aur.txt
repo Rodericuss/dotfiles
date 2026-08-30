@@ -1,0 +1,2 @@
+# Optional AUR packages. Install with yay/paru when available.
+vial-appimage

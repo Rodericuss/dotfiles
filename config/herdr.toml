@@ -1,0 +1,29 @@
+onboarding = false
+[keys]
+prefix = "ctrl+s"
+
+# Workspaces
+switch_workspace = "prefix+shift+1..9"
+
+# Tabs
+switch_tab = "prefix+1..9"
+
+# Nice extras
+new_workspace = "prefix+shift+n"
+workspace_picker = "prefix+w"
+
+new_tab = "prefix+c"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+
+reload_config = "prefix+shift+r"
+detach = "prefix+q"
+help = "prefix+?"
+
+[ui]
+agent_panel_sort = "spaces"
+show_agent_labels_on_pane_borders = true
+
+[theme]
+name = "terminal"
+auto_switch = false

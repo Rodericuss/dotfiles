@@ -1,0 +1,63 @@
+# Wayland / Hyprland session
+hyprland
+hyprpaper
+hypridle
+hyprlock
+waybar
+kitty
+rofi
+grim
+slurp
+swappy
+wf-recorder
+wl-clipboard
+cliphist
+jq
+pacman-contrib
+fzf
+swaync
+mako
+libnotify
+
+# Audio, media, network and brightness
+pipewire
+pipewire-pulse
+wireplumber
+pamixer
+playerctl
+pavucontrol
+network-manager-applet
+nm-connection-editor
+blueman
+ddcutil
+
+# Desktop portals and Wayland app support
+xdg-desktop-portal
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+xdg-utils
+qt5-wayland
+qt6-wayland
+polkit-gnome
+
+# Terminal, shell and file tools
+fish
+zsh
+zsh-syntax-highlighting
+starship
+eza
+fd
+ripgrep
+yazi
+
+# Editor and browser
+neovim
+neovide
+firefox
+python-gobject
+
+# Icons and fonts used by the configs
+ttf-jetbrains-mono-nerd
+ttf-firacode-nerd
+noto-fonts-emoji
+papirus-icon-theme
