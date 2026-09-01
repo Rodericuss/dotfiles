@@ -48,6 +48,7 @@ function starship_transient_rprompt_func
     starship module custom.transient_time
 end
 zoxide init fish | source
+direnv hook fish | source
 set -gx SEARXNG_API_URL "http://localhost:9090"
 alias avante='nvim -c "lua vim.defer_fn(function() require(\"avante.api\").zen_mode() end, 100)"'
 

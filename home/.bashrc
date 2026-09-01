@@ -12,3 +12,6 @@ PS1='[\u@\h \W]\$ '
 export XDG_CURRENT_DESKTOP=Hyprland
 
 export PATH=$PATH:$HOME/.maestro/bin
+
+eval "$(direnv hook bash)"
+eval "$(zoxide init bash)"

@@ -43,6 +43,31 @@ copy_tree() {
     done < <(find "$source_dir" -type f -not -path '*/.git/*' -print0 | sort -z)
 }
 
+install_yay() {
+    if command -v yay >/dev/null 2>&1 || command -v paru >/dev/null 2>&1; then
+        return
+    fi
+    if ((dry_run)); then
+        say 'yay/paru not found; would bootstrap yay-bin from the AUR'
+        printf '+ git clone --depth=1 https://aur.archlinux.org/yay-bin.git /tmp/dotfiles-yay-bin/yay-bin\n'
+        printf '+ (cd /tmp/dotfiles-yay-bin/yay-bin && makepkg -si --needed)\n'
+        return
+    fi
+
+    local build_dir
+    build_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-yay-bin.XXXXXX")"
+    say "building yay-bin from the AUR in $build_dir"
+    if ! git clone --depth=1 https://aur.archlinux.org/yay-bin.git "$build_dir/yay-bin"; then
+        say "could not clone yay-bin; source kept at $build_dir"
+        return 1
+    fi
+    if ! (cd "$build_dir/yay-bin" && makepkg -si --needed); then
+        say "could not install yay-bin; source kept at $build_dir"
+        return 1
+    fi
+    rm -rf -- "$build_dir"
+}
+
 install_packages() {
     ((skip_packages)) && return
     if ! command -v pacman >/dev/null 2>&1; then
@@ -59,12 +84,14 @@ install_packages() {
     fi
 
     mapfile -t aur_packages < <(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' "$repo_root/packages/aur.txt")
+    install_yay
+
     local helper=''
     if command -v paru >/dev/null 2>&1; then helper=paru; elif command -v yay >/dev/null 2>&1; then helper=yay; fi
     if [[ -n "$helper" ]]; then
         if ((dry_run)); then printf '+ %s -S --needed %s\n' "$helper" "${aur_packages[*]}"; else "$helper" -S --needed "${aur_packages[@]}"; fi
     else
-        say 'yay/paru not found; skipping optional AUR package vial-appimage'
+        say 'yay/paru unavailable; skipping optional AUR packages'
     fi
 }
 
@@ -74,7 +101,13 @@ install_configs() {
     copy_tree "$repo_root/config/waybar" "$config_home/waybar"
     copy_tree "$repo_root/config/rofi" "$config_home/rofi"
     copy_tree "$repo_root/config/kitty" "$config_home/kitty"
+    copy_tree "$repo_root/config/bat" "$config_home/bat"
     copy_tree "$repo_root/config/nvim" "$config_home/nvim"
+    copy_tree "$repo_root/config/gtk" "$config_home/gtk"
+    copy_tree "$repo_root/config/gtk-3.0" "$config_home/gtk-3.0"
+    copy_tree "$repo_root/config/fontconfig" "$config_home/fontconfig"
+    copy_file "$repo_root/config/mimeapps.list" "$config_home/mimeapps.list"
+    copy_tree "$repo_root/config/fish" "$config_home/fish"
     copy_tree "$repo_root/config/swaync" "$config_home/swaync"
     copy_file "$repo_root/config/mako-config" "$config_home/mako/config"
     copy_file "$repo_root/config/swappy-config" "$config_home/swappy/config"
@@ -83,7 +116,6 @@ install_configs() {
     copy_file "$repo_root/keyboard/layout.vil" "$HOME/Documents/Keyboard/layout.vil"
     copy_file "$repo_root/home/.bashrc" "$HOME/.bashrc"
     copy_file "$repo_root/home/.profile" "$HOME/.profile"
-    copy_file "$repo_root/home/.zshrc" "$HOME/.zshrc"
     copy_file "$repo_root/home/config.fish" "$config_home/fish/config.fish"
     copy_file "$repo_root/home/starship.toml" "$config_home/starship.toml"
     copy_tree "$repo_root/fonts/GeistMono" "$HOME/.local/share/fonts/GeistMono"
@@ -94,6 +126,12 @@ install_configs() {
         copy_file "$script" "$HOME/.local/bin/$(basename "$script")"
         run chmod 755 "$HOME/.local/bin/$(basename "$script")"
     done < <(find "$repo_root/bin" -maxdepth 1 -type f -print0 | sort -z)
+
+    if command -v bat >/dev/null 2>&1; then
+        run bat cache --build
+    else
+        say 'bat not found; rebuild its theme cache after installing bat'
+    fi
 }
 
 install_wallpapers() {

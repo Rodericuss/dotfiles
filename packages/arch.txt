@@ -41,16 +41,27 @@ qt6-wayland
 polkit-gnome
 
 # Terminal, shell and file tools
+base-devel
+curl
+git
 fish
-zsh
-zsh-syntax-highlighting
 starship
 eza
 fd
 ripgrep
+unzip
 yazi
+fnm
+zoxide
+btop
+lazygit
+bat
+direnv
+github-cli
 
 # Editor and browser
+nodejs
+npm
 neovim
 neovide
 firefox
